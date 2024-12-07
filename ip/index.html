@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>je konec.</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    /* Basic styling for text */
+  </style>
+</head>
+<body class="bg-black h-screen flex items-center justify-center px-4">
+  <div class="text-center text-green-500 max-w-screen-md">
+    <!-- Static Heading -->
+    <h1 class="text-4xl md:text-6xl font-mono">
+      Your IP has just been pulled.
+    </h1>
+    
+    <div class="mt-8">
+      <h3 class="text-xl md:text-2xl font-mono">
+        Law enforcement has been notified, thank you for your cooperation.
+      </h3>
+      <!-- Dynamic Information Display -->
+      <h3 id="ip-display" class="mt-4 text-lg md:text-xl font-mono">
+        Fetching your IP and geolocation...
+      </h3>
+    </div>
+  </div>
+
+  <script>
+    // Step 1: Fetch the user's public IP address
+    window.addEventListener('load', function () {
+      fetch('https://api.ipify.org?format=json')
+        .then(response => response.json())
+        .then(data => {
+          const userIp = data.ip; // Store the user's IP address
+
+          // Step 2: Fetch geolocation data from ipinfo.io using the obtained IP address
+          fetch(`https://ipinfo.io/${userIp}/json`)
+            .then(response => response.json())
+            .then(locationData => {
+              const ipDisplay = document.getElementById('ip-display');
+
+              // Display user's IP, city, and ISP
+              const ipText = `Your IP is: ${locationData.ip}`;
+              const cityText = `Your city is: ${locationData.city}`;
+              const ispText = `Your ISP is: ${locationData.org}`;
+
+              ipDisplay.innerHTML = `${ipText}<br>${cityText}<br>${ispText}`;
+            })
+            .catch(error => {
+              const ipDisplay = document.getElementById('ip-display');
+              ipDisplay.textContent = 'Unable to fetch geolocation information. Please try again.';
+              console.error('Error fetching geolocation data:', error);
+            });
+        })
+        .catch(error => {
+          const ipDisplay = document.getElementById('ip-display');
+          ipDisplay.textContent = 'Unable to fetch your IP. Please try again.';
+          console.error('Error fetching IP:', error);
+        });
+    });
+  </script>
+</body>
+</html>
