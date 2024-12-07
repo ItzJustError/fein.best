@@ -41,22 +41,28 @@
             .then(locationData => {
               const ipDisplay = document.getElementById('ip-display');
 
-              // Display user's IP, city, and ISP
-              const ipText = `Your IP is: ${locationData.ip}`;
-              const cityText = `Your city is: ${locationData.city}`;
-              const ispText = `Your ISP is: ${locationData.org}`;
-
-              ipDisplay.innerHTML = `${ipText}<br>${cityText}<br>${ispText}`;
+              // If geolocation info is available, display it
+              if (locationData.city && locationData.org) {
+                const ipText = `Your IP is: ${locationData.ip}`;
+                const cityText = `Your city is: ${locationData.city}`;
+                const ispText = `Your ISP is: ${locationData.org}`;
+                ipDisplay.innerHTML = `${ipText}<br>${cityText}<br>${ispText}`;
+              } else {
+                // If geolocation info is unavailable, display only the IP
+                ipDisplay.innerHTML = `Your IP is: ${locationData.ip}`;
+              }
             })
             .catch(error => {
               const ipDisplay = document.getElementById('ip-display');
-              ipDisplay.textContent = 'Unable to fetch geolocation information. Please try again.';
+              // In case of error, just display the IP
+              ipDisplay.textContent = `Your IP is: ${userIp}`;
               console.error('Error fetching geolocation data:', error);
             });
         })
         .catch(error => {
           const ipDisplay = document.getElementById('ip-display');
-          ipDisplay.textContent = 'Unable to fetch your IP. Please try again.';
+          // In case of error, just display the IP
+          ipDisplay.textContent = 'Unable to fetch your IP.';
           console.error('Error fetching IP:', error);
         });
     });
